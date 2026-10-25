@@ -1,0 +1,45 @@
+
+name: Kotlin Mobile Studio - Android Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download project
+        uses: actions/checkout@v4
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Verify build environment
+        run: |
+          java -version
+          sdkmanager --list_installed
+
+      - name: Prepare starter project
+        run: |
+          echo "Cloud build environment is ready."
+          mkdir -p output
+
+      - name: Save build report
+        run: |
+          echo "Kotlin Mobile Studio build environment verified." > output/build-report.txt
+
+      - name: Upload build report
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-report
+          path: output/build-report.txt
